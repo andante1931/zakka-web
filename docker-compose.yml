@@ -1,0 +1,21 @@
+version: "3.9"
+services:
+  # サービス名
+  app:
+    # ビルドコンテキストの指定（Dockerfileがある場所を指定）
+    build: ./infra/php
+    # ホスト側の./backendをappのコンテナ内/workへマウント
+    volumes:
+      - ./backend:/work
+  # nginxの設定（公式のnginxイメージを使用）
+  web:
+    image: nginx:1.20-alpine
+    # ホスト側:コンテナ側
+    ports:
+      - 8080:80
+    # nginxの設定ファイルを指定
+    volumes:
+      - ./backend:/work
+      - ./infra/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    working_dir: /work
+
